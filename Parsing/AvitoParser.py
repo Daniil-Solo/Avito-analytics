@@ -1,7 +1,11 @@
+import csv
+import json
+
+
 class AvitoParser:
     def __init__(self):
-        self.url = None
-        self.file_name = None
+        self.url = "https://www.avito.ru/perm/kvartiry"  # default value
+        self.file_name = "data.csv"  # default value
 
     def get_n_pages(self):
         """
@@ -11,17 +15,28 @@ class AvitoParser:
         """
         pass
 
-    def save_data(self, data):
+    def save_data(self, data: list):
         """
         This function saves data in a file named self.file_name
         """
-        pass
+        with open(self.file_name, 'w') as csv_file:
+            writer = csv.writer(csv_file, delimiter=';')
+            writer.writerows(data)
 
-    def load_configs(self):
+    def load_new_configs(self):
         """
-        This function loads configs.yml and fills empty properties
+        This function loads configs.json and fills properties
+        If there is no configs.json, file will be created with default values
         """
-        pass
+        try:
+            with open("configs.json", 'r') as read_f:
+                configs = json.load(read_f)
+            self.url = configs['url']
+            self.file_name = configs['file_name']
+        except FileNotFoundError:
+            configs = dict(url=self.url, file_name=self.file_name)
+            with open("configs.json", 'w') as write_f:
+                json.dump(configs, write_f)
 
     def start(self):
         """
