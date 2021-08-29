@@ -1,29 +1,41 @@
 import csv
 import json
+import requests
+import bs4
 
 
 class AvitoParser:
     def __init__(self):
         self.url = "https://www.avito.ru/perm/kvartiry"  # default value
         self.file_name = "data.csv"  # default value
+        self.load_new_configs()
 
-    def get_n_pages(self):
+    def get_n_pages(self) -> int or None:
         """
         This function finds out number of pages for this theme.
-        This function changes self.n_page. It returns None, if some error.
-        :return: number of pages
+        It returns None, if some error.
+        :return: number of pages or None
         """
-        pass
+        try:
+            request = requests.get(self.url)
+            html = request.text
+            soup = bs4.BeautifulSoup(html, "lxml")
+            list_page_buttons = soup.select_one("div.pagination-root-Ntd_O").select('span')
+            max_number_page = list_page_buttons[-2].text
+            return int(max_number_page)
+        except requests.exceptions.ConnectionError:
+            print("Отсутствует соединение")
+            return None
 
-    def save_data(self, data: list):
+    def save_data(self, data: list) -> None:
         """
         This function saves data in a file named self.file_name
         """
-        with open(self.file_name, 'w') as csv_file:
+        with open(self.file_name, 'w', newline='') as csv_file:
             writer = csv.writer(csv_file, delimiter=';')
             writer.writerows(data)
 
-    def load_new_configs(self):
+    def load_new_configs(self) -> None:
         """
         This function loads configs.json and fills properties
         If there is no configs.json, file will be created with default values
@@ -38,7 +50,7 @@ class AvitoParser:
             with open("configs.json", 'w') as write_f:
                 json.dump(configs, write_f)
 
-    def start(self):
+    def start(self) -> None:
         """
         This function is main loop for collecting and saving data
         """
