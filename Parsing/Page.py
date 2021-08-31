@@ -7,7 +7,12 @@ class Page:
         self.url = url
         self.p_num = page_number
 
-    def get_urls(self) -> list or None:
+    def get_urls(self) -> list:
+        """
+        This function returns list of urls on apartments
+        It uses self.url and self.p_num for creating request
+        If there is connection error, it returns []
+        """
         try:
             request = requests.get(self.url, params=dict(p=self.p_num))
             html = request.text
@@ -23,6 +28,10 @@ class Page:
             return []
 
     def get_data(self, params: dict) -> list:
+        """
+        This function returns list of data about apartments
+        If there is connection error, it returns []
+        """
         urls = self.get_urls()
         data = []
         for url in urls:
