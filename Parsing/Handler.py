@@ -35,7 +35,10 @@ class AboutHouseBlockHandler(AbstractHandler):
         self.key_word = key_word
 
     def get_info(self, soup: bs4.BeautifulSoup) -> str or None:
-        block = soup.select(AboutApartmentBlockHandler.selector)[AboutHouseBlockHandler.number_block]
+        try:
+            block = soup.select(AboutApartmentBlockHandler.selector)[AboutHouseBlockHandler.number_block]
+        except IndexError:
+            return None
         if not block:
             text = block.text
             index_end_of_string = re.search(self.key_word, text).span()[1]
@@ -75,7 +78,7 @@ class NFloorsHandler(AboutApartmentBlockHandler):
             return None
 
 
-class ApartmentFloorHandler(AbstractHandler):
+class ApartmentFloorHandler(AboutApartmentBlockHandler):
     def __init__(self):
         super().__init__("Этаж:")
 
@@ -121,7 +124,7 @@ class Distributor:
             return AboutApartmentBlockHandler("Общая площадь:")
         elif self.key == "number of floors":
             return NFloorsHandler()
-        elif self.key == "number of floors":
+        elif self.key == "apartment floor":
             return ApartmentFloorHandler()
         elif self.key == "price":
             return PriceHandler()

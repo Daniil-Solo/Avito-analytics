@@ -1,4 +1,5 @@
 import csv
+import time
 import json
 import requests
 import bs4
@@ -58,6 +59,7 @@ class AvitoParser:
                 configs = json.load(read_f)
             self.url = configs['url']
             self.file_name = configs['file_name']
+            self.params = configs['params']
         except FileNotFoundError:
             print("Отсутствует файл configs.json")
 
@@ -72,3 +74,4 @@ class AvitoParser:
             page = Page(self.url, number_page)
             data = page.get_data(self.params)
             self.save_data(data)
+            time.sleep(10)

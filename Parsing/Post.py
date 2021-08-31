@@ -20,7 +20,6 @@ class Post:
         request = requests.get(full_url)
         html = request.text
         soup = BeautifulSoup(html, "lxml")
-
         key_storage = dict(link=full_url)
         params_without_link = params.copy()
         params_without_link.pop("link")

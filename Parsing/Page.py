@@ -1,3 +1,4 @@
+import time
 import bs4
 import requests
 
@@ -39,4 +40,5 @@ class Page:
         for url in urls:
             post = Post(url)
             data.append(post.get_data(params))
+            time.sleep(5)
         return data
