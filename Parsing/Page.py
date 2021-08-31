@@ -1,6 +1,8 @@
 import bs4
 import requests
 
+from Parsing.Post import Post
+
 
 class Page:
     def __init__(self, url, page_number):

@@ -3,6 +3,8 @@ import json
 import requests
 import bs4
 
+from Parsing.Page import Page
+
 
 class AvitoParser:
     def __init__(self):

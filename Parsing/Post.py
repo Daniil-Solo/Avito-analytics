@@ -1,5 +1,7 @@
-import bs4
+from bs4 import BeautifulSoup
 import requests
+
+from Parsing.Handler import Distributor
 
 
 class Post:
@@ -17,7 +19,7 @@ class Post:
         full_url = Post.domain + self.short_url
         request = requests.get(full_url)
         html = request.text
-        soup = bs4.BeautifulSoup(html, "lxml")
+        soup = BeautifulSoup(html, "lxml")
 
         key_storage = dict(link=full_url)
         params_without_link = params.copy()
