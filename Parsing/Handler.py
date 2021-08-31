@@ -25,9 +25,37 @@ class NRoomsHandler(AbstractHandler):
         geo_block = soup.select_one("div.item-params")
         if not geo_block:
             text = geo_block.text
-            index_end = re.search("Количество комнат:", text).span()[1]
-            n_rooms = text[index_end + 1: index_end + 3]
+            index_end_of_string = re.search("Количество комнат:", text).span()[1]
+            index_end_of_line = re.search("\n", text[index_end_of_string:]).span()[0] + index_end_of_string
+            n_rooms = text[index_end_of_string: index_end_of_line]
             return n_rooms
+        else:
+            return None
+
+
+class AreaAppartmentHandler(AbstractHandler):
+    def get_info(self, soup: bs4.BeautifulSoup) -> str or None:
+        geo_block = soup.select_one("div.item-params")
+        if not geo_block:
+            text = geo_block.text
+            index_end_of_string = re.search("Общая площадь:", text).span()[1]
+            index_end_of_line = re.search("\n", text[index_end_of_string:]).span()[0] + index_end_of_string
+            area = text[index_end_of_string: index_end_of_line]
+            return area
+        else:
+            return None
+
+
+class NFloorsHandler(AbstractHandler):
+    def get_info(self, soup: bs4.BeautifulSoup) -> str or None:
+        geo_block = soup.select_one("div.item-params")
+        if not geo_block:
+            text = geo_block.text
+            index_end_of_string = re.search("Этаж: ", text).span()[1]
+            index_end_of_line = re.search("\n", text[index_end_of_string:]).span()[0] + index_end_of_string
+            index_end_this_floor = re.search("из", text[index_end_of_string:]).span()[1] + index_end_of_string
+            area = text[index_end_this_floor: index_end_of_line]
+            return area
         else:
             return None
 
