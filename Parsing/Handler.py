@@ -59,8 +59,31 @@ class NFloorsHandler(AbstractHandler):
             index_end_of_string = re.search("Этаж: ", text).span()[1]
             index_end_of_line = re.search("\n", text[index_end_of_string:]).span()[0] + index_end_of_string
             index_end_this_floor = re.search("из", text[index_end_of_string:]).span()[1] + index_end_of_string
-            area = text[index_end_this_floor: index_end_of_line]
-            return area
+            n_floors = text[index_end_this_floor: index_end_of_line]
+            return n_floors
+        else:
+            return None
+
+
+class AppartmentFloorHandler(AbstractHandler):
+    def get_info(self, soup: bs4.BeautifulSoup) -> str or None:
+        geo_block = soup.select_one("div.item-params")
+        if not geo_block:
+            text = geo_block.text
+            index_end_of_string = re.search("Этаж: ", text).span()[1]
+            index_end_this_floor = re.search("из", text[index_end_of_string:]).span()[0] + index_end_of_string
+            this_floor = text[index_end_of_string: index_end_this_floor]
+            return this_floor
+        else:
+            return None
+
+
+class PriceHandler(AbstractHandler):
+    def get_info(self, soup: bs4.BeautifulSoup) -> str or None:
+        geo_block = soup.select_one("div.item-price-wrapper")
+        if not geo_block:
+            price = geo_block.select_one("span.js-item-price").get("content")
+            return price
         else:
             return None
 
