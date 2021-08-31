@@ -9,6 +9,7 @@ class AvitoParser:
         self.url = None
         self.file_name = None
         self.params = None
+        self.has_headers = False
         self.load_new_configs()
 
     def get_n_pages(self) -> int or None:
@@ -32,7 +33,16 @@ class AvitoParser:
         """
         This function saves data in a file named self.file_name
         """
-        with open(self.file_name, 'w', newline='') as csv_file:
+        if not self.has_headers:
+            headers = []
+            for key in self.params:
+                headers.append(key)
+            with open(self.file_name, 'w', newline='') as csv_file:
+                writer = csv.writer(csv_file, delimiter=';')
+                writer.writerow(headers)
+            self.has_headers = True
+
+        with open(self.file_name, 'a', newline='') as csv_file:
             writer = csv.writer(csv_file, delimiter=';')
             writer.writerows(data)
 
