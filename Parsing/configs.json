@@ -1,4 +1,22 @@
 {
   "url": "https://www.avito.ru/perm/kvartiry",
-  "file_name": "data.csv"
+  "file_name": "data.csv",
+  "params": {
+      "physical address": true,
+      "number of rooms": true,
+      "area of apartment": true,
+      "number of floors": true,
+      "apartment floor": true,
+      "price": true,
+      "link": true,
+      "text": true,
+      "repair": true,
+      "bathroom": true,
+      "view from the windows": true,
+      "year of construction": true,
+      "elevator": true,
+      "garbage chute": true,
+      "type of house": true,
+      "parking": true
+  }
 }
