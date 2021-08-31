@@ -10,13 +10,32 @@ class AbstractHandler(ABC):
 
 
 class AboutApartmentBlockHandler(AbstractHandler):
-    selector = "div.item-map-location"
+    selector = "div.item-view-block"
 
     def __init__(self, key_word):
         self.key_word = key_word
 
     def get_info(self, soup: bs4.BeautifulSoup) -> str or None:
         block = soup.select_one(AboutApartmentBlockHandler.selector)
+        if not block:
+            text = block.text
+            index_end_of_string = re.search(self.key_word, text).span()[1]
+            index_end_of_line = re.search("\n", text[index_end_of_string:]).span()[0] + index_end_of_string
+            data = text[index_end_of_string: index_end_of_line]
+            return data
+        else:
+            return None
+
+
+class AboutHouseBlockHandler(AbstractHandler):
+    selector = "div.item-view-block"
+    number_block = 3
+
+    def __init__(self, key_word):
+        self.key_word = key_word
+
+    def get_info(self, soup: bs4.BeautifulSoup) -> str or None:
+        block = soup.select(AboutApartmentBlockHandler.selector)[AboutHouseBlockHandler.number_block]
         if not block:
             text = block.text
             index_end_of_string = re.search(self.key_word, text).span()[1]
@@ -113,18 +132,18 @@ class Distributor:
         elif self.key == "bathroom":
             return AboutApartmentBlockHandler("Санузел:")
         elif self.key == "view from the windows":
-            return ViewFromWindowsHandler()
+            return AboutApartmentBlockHandler("Вид из окон:")
         elif self.key == "year of construction":
-            return YearContructionHandler()
+            return AboutHouseBlockHandler("Год постройки:")
         elif self.key == "elevator":
-            return ElevatorHandler()
+            return AboutHouseBlockHandler("Пассажирский лифт:")
         elif self.key == "garbage chute":
-            return GarbageChuteHandler()
+            return AboutHouseBlockHandler("В доме:")
         elif self.key == "type of house":
-            return TypeHouseHandler()
+            return AboutApartmentBlockHandler("Тип дома:")
         elif self.key == "parking":
-            return ParkingHandler()
+            return AboutApartmentBlockHandler("Парковка:")
         else:
-            print("Встречен параметр, у которого отсутствует обработчик", self.key)
+            print("Встречен параметр, у которого отсутствует обработчик, параметр:", self.key)
             return EmptyHandler()
 
