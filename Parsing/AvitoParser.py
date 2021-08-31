@@ -58,5 +58,5 @@ class AvitoParser:
             return
         for number_page in range(n_pages):
             page = Page(self.url, number_page)
-            data = page.get_data()
+            data = page.get_data(self.params)
             self.save_data(data)
