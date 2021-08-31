@@ -69,8 +69,8 @@ class NFloorsHandler(AboutApartmentBlockHandler):
     def get_info(self, soup: bs4.BeautifulSoup) -> str or None:
         text = super().get_info(soup)
         if text:
-            index_end_srting = text.search("из", text).span()[1]
-            return text[index_end_srting:]
+            index_end_string = text.search("из", text).span()[1]
+            return text[index_end_string:]
         else:
             return None
 
@@ -82,8 +82,8 @@ class ApartmentFloorHandler(AbstractHandler):
     def get_info(self, soup: bs4.BeautifulSoup) -> str or None:
         text = super().get_info(soup)
         if text:
-            index_begin_srting = text.search("из", text).span()[0]
-            return text[: index_begin_srting]
+            index_begin_string = text.search("из", text).span()[0]
+            return text[: index_begin_string]
         else:
             return None
 
@@ -133,6 +133,8 @@ class Distributor:
             return AboutApartmentBlockHandler("Санузел:")
         elif self.key == "view from the windows":
             return AboutApartmentBlockHandler("Вид из окон:")
+        elif self.key == "terrace":
+            return AboutApartmentBlockHandler("Балкон или лоджия:")
         elif self.key == "year of construction":
             return AboutHouseBlockHandler("Год постройки:")
         elif self.key == "elevator":
@@ -146,4 +148,3 @@ class Distributor:
         else:
             print("Встречен параметр, у которого отсутствует обработчик, параметр:", self.key)
             return EmptyHandler()
-
