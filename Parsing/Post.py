@@ -26,5 +26,8 @@ class Post:
             if params[key]:
                 key_storage[key] = ""
                 handler = Distributor(key).distribute()
-                key_storage[key] = handler.get_info(soup)
+                try:
+                    key_storage[key] = handler.get_info(soup)
+                except AttributeError or TypeError:
+                    key_storage[key] = None
         return list(key_storage.values())
