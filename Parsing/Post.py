@@ -19,8 +19,10 @@ class Post:
         html = request.text
         soup = bs4.BeautifulSoup(html, "lxml")
 
-        key_storage = dict()
-        for key in params:
+        key_storage = dict(link=full_url)
+        params_without_link = params.copy()
+        params_without_link.pop("link")
+        for key in params_without_link:
             if params[key]:
                 key_storage[key] = ""
                 handler = Distributor(key).distribute()
