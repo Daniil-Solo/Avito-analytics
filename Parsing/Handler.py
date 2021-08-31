@@ -9,6 +9,11 @@ class AbstractHandler(ABC):
         pass
 
 
+class EmptyHandler(AbstractHandler):
+    def get_info(self, soup: bs4.BeautifulSoup) -> str or None:
+        return None
+
+
 class PhysAddressHandler(AbstractHandler):
     def get_info(self, soup: bs4.BeautifulSoup) -> str or None:
         geo_block = soup.select_one("div.item-map-location")
@@ -97,5 +102,5 @@ class Distributor:
             return ParkingHandler()
         else:
             print("Встречен параметр, у которого отсутствует обработчик", self.key)
-            return None
+            return EmptyHandler()
 
