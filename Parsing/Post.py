@@ -26,5 +26,5 @@ class Post:
             if params[key]:
                 key_storage[key] = ""
                 handler = Distributor(key).distribute()
-                key_storage[key] = handler.get_data()
+                key_storage[key] = handler.get_info(soup)
         return list(key_storage.values())

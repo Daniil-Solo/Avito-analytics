@@ -1,9 +1,10 @@
+import bs4
 from abc import ABC, abstractmethod
 
 
-class AbstractHandler:
+class AbstractHandler(ABC):
     @abstractmethod
-    def get_info(self) -> str or None:
+    def get_info(self, soup: bs4.BeautifulSoup) -> str or None:
         pass
 
     @abstractmethod
@@ -47,5 +48,6 @@ class Distributor:
         elif self.key == "parking":
             return ParkingHandler()
         else:
-            print("Встречен")
+            print("Встречен параметр, у которого отсутствует обработчик", self.key)
+            return None
 
