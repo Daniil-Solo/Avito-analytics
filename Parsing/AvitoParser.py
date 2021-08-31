@@ -6,8 +6,9 @@ import bs4
 
 class AvitoParser:
     def __init__(self):
-        self.url = "https://www.avito.ru/perm/kvartiry"  # default value
-        self.file_name = "data.csv"  # default value
+        self.url = None
+        self.file_name = None
+        self.params = None
         self.load_new_configs()
 
     def get_n_pages(self) -> int or None:
@@ -46,9 +47,7 @@ class AvitoParser:
             self.url = configs['url']
             self.file_name = configs['file_name']
         except FileNotFoundError:
-            configs = dict(url=self.url, file_name=self.file_name)
-            with open("configs.json", 'w') as write_f:
-                json.dump(configs, write_f)
+            print("Отсутствует файл configs.json")
 
     def start(self) -> None:
         """
@@ -59,8 +58,5 @@ class AvitoParser:
             return
         for number_page in range(n_pages):
             page = Page(self.url, number_page)
-            post_urls = page.get_post_urls()
-            for post_url in post_urls:
-                post = Post(post_url)
-                data = post.get_data()
-                self.save_data(data)
+            data = page.get_data()
+            self.save_data(data)
