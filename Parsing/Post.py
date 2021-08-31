@@ -23,6 +23,6 @@ class Post:
         for key in params:
             if params[key]:
                 key_storage[key] = ""
-                handler = Handler(key)
+                handler = Distributor(key).distribute()
                 key_storage[key] = handler.get_data()
         return list(key_storage.values())
