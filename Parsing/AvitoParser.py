@@ -54,8 +54,13 @@ class AvitoParser:
         """
         This function is main loop for collecting and saving data
         """
-        # получение количества страниц и для каждой страницы:
-        #     обращение к странице
-        #     получение ссылок на объявления со страницы
-        #     выполнение переход по каждой ссылке и извлечь требуемые данные
-        # cохранение всех данных
+        n_pages = self.get_n_pages()
+        if not n_pages:
+            return
+        for number_page in range(n_pages):
+            page = Page(self.url, number_page)
+            post_urls = page.get_post_urls()
+            for post_url in post_urls:
+                post = Post(post_url)
+                data = post.get_data()
+                self.save_data(data)
