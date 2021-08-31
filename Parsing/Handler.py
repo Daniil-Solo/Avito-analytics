@@ -1,4 +1,5 @@
 import bs4
+import re
 from abc import ABC, abstractmethod
 
 
@@ -7,9 +8,28 @@ class AbstractHandler(ABC):
     def get_info(self, soup: bs4.BeautifulSoup) -> str or None:
         pass
 
-    @abstractmethod
-    def check_exists_it(self) -> bool:
-        pass
+
+class PhysAddressHandler(AbstractHandler):
+    def get_info(self, soup: bs4.BeautifulSoup) -> str or None:
+        geo_block = soup.select_one("div.item-map-location")
+        if not geo_block:
+            address = geo_block.select_one("span.item-address__string").text
+            district = geo_block.select_one("span.item-address-georeferences-item__content").text
+            return address + "|" + district
+        else:
+            return None
+
+
+class NRoomsHandler(AbstractHandler):
+    def get_info(self, soup: bs4.BeautifulSoup) -> str or None:
+        geo_block = soup.select_one("div.item-params")
+        if not geo_block:
+            text = geo_block.text
+            index_end = re.search("Количество комнат:", text).span()[1]
+            n_rooms = text[index_end + 1: index_end + 3]
+            return n_rooms
+        else:
+            return None
 
 
 class Distributor:
