@@ -9,6 +9,24 @@ class AbstractHandler(ABC):
         pass
 
 
+class AboutApartmentBlockHandler(AbstractHandler):
+    selector = "div.item-map-location"
+
+    def __init__(self, key_word):
+        self.key_word = key_word
+
+    def get_info(self, soup: bs4.BeautifulSoup) -> str or None:
+        block = soup.select_one(AboutApartmentBlockHandler.selector)
+        if not block:
+            text = block.text
+            index_end_of_string = re.search(self.key_word, text).span()[1]
+            index_end_of_line = re.search("\n", text[index_end_of_string:]).span()[0] + index_end_of_string
+            data = text[index_end_of_string: index_end_of_line]
+            return data
+        else:
+            return None
+
+
 class EmptyHandler(AbstractHandler):
     def get_info(self, soup: bs4.BeautifulSoup) -> str or None:
         return None
@@ -25,55 +43,28 @@ class PhysAddressHandler(AbstractHandler):
             return None
 
 
-class NRoomsHandler(AbstractHandler):
+class NFloorsHandler(AboutApartmentBlockHandler):
+    def __init__(self):
+        super().__init__("Этаж:")
+
     def get_info(self, soup: bs4.BeautifulSoup) -> str or None:
-        geo_block = soup.select_one("div.item-params")
-        if not geo_block:
-            text = geo_block.text
-            index_end_of_string = re.search("Количество комнат:", text).span()[1]
-            index_end_of_line = re.search("\n", text[index_end_of_string:]).span()[0] + index_end_of_string
-            n_rooms = text[index_end_of_string: index_end_of_line]
-            return n_rooms
+        text = super().get_info(soup)
+        if text:
+            index_end_srting = text.search("из", text).span()[1]
+            return text[index_end_srting:]
         else:
             return None
 
 
-class AreaAppartmentHandler(AbstractHandler):
+class ApartmentFloorHandler(AbstractHandler):
+    def __init__(self):
+        super().__init__("Этаж:")
+
     def get_info(self, soup: bs4.BeautifulSoup) -> str or None:
-        geo_block = soup.select_one("div.item-params")
-        if not geo_block:
-            text = geo_block.text
-            index_end_of_string = re.search("Общая площадь:", text).span()[1]
-            index_end_of_line = re.search("\n", text[index_end_of_string:]).span()[0] + index_end_of_string
-            area = text[index_end_of_string: index_end_of_line]
-            return area
-        else:
-            return None
-
-
-class NFloorsHandler(AbstractHandler):
-    def get_info(self, soup: bs4.BeautifulSoup) -> str or None:
-        geo_block = soup.select_one("div.item-params")
-        if not geo_block:
-            text = geo_block.text
-            index_end_of_string = re.search("Этаж: ", text).span()[1]
-            index_end_of_line = re.search("\n", text[index_end_of_string:]).span()[0] + index_end_of_string
-            index_end_this_floor = re.search("из", text[index_end_of_string:]).span()[1] + index_end_of_string
-            n_floors = text[index_end_this_floor: index_end_of_line]
-            return n_floors
-        else:
-            return None
-
-
-class AppartmentFloorHandler(AbstractHandler):
-    def get_info(self, soup: bs4.BeautifulSoup) -> str or None:
-        geo_block = soup.select_one("div.item-params")
-        if not geo_block:
-            text = geo_block.text
-            index_end_of_string = re.search("Этаж: ", text).span()[1]
-            index_end_this_floor = re.search("из", text[index_end_of_string:]).span()[0] + index_end_of_string
-            this_floor = text[index_end_of_string: index_end_this_floor]
-            return this_floor
+        text = super().get_info(soup)
+        if text:
+            index_begin_srting = text.search("из", text).span()[0]
+            return text[: index_begin_srting]
         else:
             return None
 
@@ -98,19 +89,6 @@ class TextHandler(AbstractHandler):
             return None
 
 
-class RepairHandler(AbstractHandler):
-    def get_info(self, soup: bs4.BeautifulSoup) -> str or None:
-        geo_block = soup.select_one("div.item-params")
-        if not geo_block:
-            text = geo_block.text
-            index_end_of_string = re.search("Ремонт: ", text).span()[1]
-            index_end_of_line = re.search("\n", text[index_end_of_string:]).span()[0] + index_end_of_string
-            n_floors = text[index_end_of_string: index_end_of_line]
-            return n_floors
-        else:
-            return None
-
-
 class Distributor:
     def __init__(self, key: str):
         self.key = key
@@ -119,21 +97,21 @@ class Distributor:
         if self.key == "physical address":
             return PhysAddressHandler()
         elif self.key == "number of rooms":
-            return NRoomsHandler()
+            return AboutApartmentBlockHandler("Количество комнат:")
         elif self.key == "area of apartment":
-            return AreaAppartmentHandler()
+            return AboutApartmentBlockHandler("Общая площадь:")
         elif self.key == "number of floors":
             return NFloorsHandler()
         elif self.key == "number of floors":
-            return AppartmentFloorHandler()
+            return ApartmentFloorHandler()
         elif self.key == "price":
             return PriceHandler()
         elif self.key == "text":
             return TextHandler()
         elif self.key == "repair":
-            return RepairHandler()
+            return AboutApartmentBlockHandler("Ремонт:")
         elif self.key == "bathroom":
-            return BathroomHandler()
+            return AboutApartmentBlockHandler("Санузел:")
         elif self.key == "view from the windows":
             return ViewFromWindowsHandler()
         elif self.key == "year of construction":
