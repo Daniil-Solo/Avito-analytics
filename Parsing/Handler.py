@@ -10,43 +10,27 @@ class AbstractHandler(ABC):
 
 
 class AboutApartmentBlockHandler(AbstractHandler):
-    selector = "div.item-view-block"
-
     def __init__(self, key_word):
         self.key_word = key_word
 
     def get_info(self, soup: bs4.BeautifulSoup) -> str or None:
-        block = soup.select_one(AboutApartmentBlockHandler.selector)
-        if not block:
-            text = block.text
-            index_end_of_string = re.search(self.key_word, text).span()[1]
-            index_end_of_line = re.search("\n", text[index_end_of_string:]).span()[0] + index_end_of_string
-            data = text[index_end_of_string: index_end_of_line]
-            return data
-        else:
-            return None
+        text = soup.text
+        index_end_of_string = re.search(self.key_word, text).span()[1]
+        index_end_of_line = re.search("\n", text[index_end_of_string:]).span()[0] + index_end_of_string
+        data = text[index_end_of_string: index_end_of_line]
+        return data
 
 
 class AboutHouseBlockHandler(AbstractHandler):
-    selector = "div.item-view-block"
-    number_block = 3
-
     def __init__(self, key_word):
         self.key_word = key_word
 
     def get_info(self, soup: bs4.BeautifulSoup) -> str or None:
-        try:
-            block = soup.select(AboutApartmentBlockHandler.selector)[AboutHouseBlockHandler.number_block]
-        except IndexError:
-            return None
-        if not block:
-            text = block.text
-            index_end_of_string = re.search(self.key_word, text).span()[1]
-            index_end_of_line = re.search("\n", text[index_end_of_string:]).span()[0] + index_end_of_string
-            data = text[index_end_of_string: index_end_of_line]
-            return data
-        else:
-            return None
+        text = soup.text
+        index_end_of_string = re.search(self.key_word, text).span()[1]
+        index_end_of_line = re.search("\n", text[index_end_of_string:]).span()[0] + index_end_of_string
+        data = text[index_end_of_string: index_end_of_line]
+        return data
 
 
 class EmptyHandler(AbstractHandler):
@@ -56,13 +40,11 @@ class EmptyHandler(AbstractHandler):
 
 class PhysAddressHandler(AbstractHandler):
     def get_info(self, soup: bs4.BeautifulSoup) -> str or None:
-        geo_block = soup.select_one("div.item-map-location")
-        if not geo_block:
-            address = geo_block.select_one("span.item-address__string").text
-            district = geo_block.select_one("span.item-address-georeferences-item__content").text
-            return address + "|" + district
-        else:
-            return None
+        text = soup.text
+        index_begin_address = re.search('ул\.', text).span()[0]
+        index_end_address = re.search('Скрыть карту', text).span()[0]
+        address = text[index_begin_address: index_end_address]
+        return address
 
 
 class NFloorsHandler(AboutApartmentBlockHandler):
@@ -71,11 +53,8 @@ class NFloorsHandler(AboutApartmentBlockHandler):
 
     def get_info(self, soup: bs4.BeautifulSoup) -> str or None:
         text = super().get_info(soup)
-        if text:
-            index_end_string = text.search("из", text).span()[1]
-            return text[index_end_string:]
-        else:
-            return None
+        index_end_string = re.search("из", text).span()[1]
+        return text[index_end_string:]
 
 
 class ApartmentFloorHandler(AboutApartmentBlockHandler):
@@ -84,31 +63,17 @@ class ApartmentFloorHandler(AboutApartmentBlockHandler):
 
     def get_info(self, soup: bs4.BeautifulSoup) -> str or None:
         text = super().get_info(soup)
-        if text:
-            index_begin_string = text.search("из", text).span()[0]
-            return text[: index_begin_string]
-        else:
-            return None
+        index_begin_string = re.search("из", text).span()[0]
+        return text[: index_begin_string]
 
 
 class PriceHandler(AbstractHandler):
     def get_info(self, soup: bs4.BeautifulSoup) -> str or None:
-        price_block = soup.select_one("div.item-price-wrapper")
-        if not price_block:
-            price = price_block.select_one("span.js-item-price").get("content")
-            return price
-        else:
-            return None
-
-
-class TextHandler(AbstractHandler):
-    def get_info(self, soup: bs4.BeautifulSoup) -> str or None:
-        text_block = soup.select_one("div.item-description")
-        if not text_block:
-            text = text_block.text
-            return text
-        else:
-            return None
+        text = soup.text
+        index_begin_price = re.search("Пожаловаться", text).span()[1]
+        index_end_price = re.search("₽", text[index_begin_price:]).span()[0] + index_begin_price
+        price = text[index_begin_price: index_end_price]
+        return price
 
 
 class Distributor:
@@ -128,8 +93,6 @@ class Distributor:
             return ApartmentFloorHandler()
         elif self.key == "price":
             return PriceHandler()
-        elif self.key == "text":
-            return TextHandler()
         elif self.key == "repair":
             return AboutApartmentBlockHandler("Ремонт:")
         elif self.key == "bathroom":

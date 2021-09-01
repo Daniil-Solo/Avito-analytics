@@ -37,15 +37,13 @@ class AvitoParser:
         This function saves data in a file named self.file_name
         """
         if not self.has_headers:
-            headers = []
-            for key in self.params:
-                headers.append(key)
-            with open(self.file_name, 'w', newline='') as csv_file:
+            headers = list(self.params.keys())
+            with open(self.file_name, 'w', newline='', encoding='utf-8') as csv_file:
                 writer = csv.writer(csv_file, delimiter=';')
                 writer.writerow(headers)
             self.has_headers = True
 
-        with open(self.file_name, 'a', newline='') as csv_file:
+        with open(self.file_name, 'a', newline='', encoding='utf-8') as csv_file:
             writer = csv.writer(csv_file, delimiter=';')
             writer.writerows(data)
 
@@ -75,3 +73,4 @@ class AvitoParser:
             data = page.get_data(self.params)
             self.save_data(data)
             time.sleep(10)
+            break

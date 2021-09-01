@@ -9,7 +9,6 @@
       "apartment floor": true,
       "price": true,
       "link": true,
-      "text": true,
       "repair": true,
       "bathroom": true,
       "view from the windows": true,
