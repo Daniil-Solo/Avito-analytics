@@ -40,5 +40,6 @@ class Page:
         for url in urls:
             post = Post(url)
             data.append(post.get_data(params))
-            time.sleep(5)
+            time.sleep(3)
+            break
         return data
