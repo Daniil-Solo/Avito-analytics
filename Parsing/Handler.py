@@ -18,7 +18,7 @@ class AboutApartmentBlockHandler(AbstractHandler):
         index_end_of_string = re.search(self.key_word, text).span()[1]
         index_end_of_line = re.search("\n", text[index_end_of_string:]).span()[0] + index_end_of_string
         data = text[index_end_of_string: index_end_of_line]
-        return data
+        return data.strip()
 
 
 class AboutHouseBlockHandler(AbstractHandler):
