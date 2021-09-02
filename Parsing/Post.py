@@ -29,19 +29,8 @@ class Post:
                 key_storage[key] = ""
                 handler = Distributor(key).distribute()
                 try:
-                    key_storage[key] = self.clear(handler.get_info(soup))
+                    key_storage[key] = handler.get_info(soup).strip()
                 except AttributeError or TypeError:
                     key_storage[key] = None
         return list(key_storage.values())
 
-    @staticmethod
-    def clear(dirty_data: str) -> str:
-        """
-        This function returns clear data
-        Output data contains only russian letters, some punctuations
-        """
-        data = re.sub("\n", " ", dirty_data)
-        data = re.findall(r"[А-Яа-я\d .,-]+", data)
-        data = [item.strip() for item in data]
-        data = ''.join(data)
-        return data
