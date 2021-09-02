@@ -40,10 +40,8 @@ class EmptyHandler(AbstractHandler):
 
 class PhysAddressHandler(AbstractHandler):
     def get_info(self, soup: bs4.BeautifulSoup) -> str or None:
-        text = soup.text
-        index_begin_address = re.search('ул\.', text).span()[0]
-        index_end_address = re.search('Скрыть карту', text).span()[0]
-        address = text[index_begin_address: index_end_address]
+        geo_block = soup.select_one("div.item-address")
+        address = geo_block.text.strip().replace("\n", "|")
         return address
 
 
