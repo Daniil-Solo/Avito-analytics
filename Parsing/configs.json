@@ -1,6 +1,6 @@
 {
   "url": "https://www.avito.ru/perm/kvartiry",
-  "file_name": "data.csv",
+  "file_name": "data1.csv",
   "params": {
       "physical address": true,
       "number of rooms": true,

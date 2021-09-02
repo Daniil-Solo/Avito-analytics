@@ -65,12 +65,11 @@ class AvitoParser:
         """
         This function is main loop for collecting and saving data
         """
-        n_pages = self.get_n_pages()
+        n_pages = range(self.get_n_pages())
         if not n_pages:
             return
-        for number_page in range(n_pages):
+        for number_page in n_pages:
             page = Page(self.url, number_page)
             data = page.get_data(self.params)
             self.save_data(data)
             time.sleep(10)
-            break
