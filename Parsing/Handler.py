@@ -15,10 +15,14 @@ class AboutApartmentBlockHandler(AbstractHandler):
 
     def get_info(self, soup: bs4.BeautifulSoup) -> str or None:
         text = soup.text
-        index_end_of_string = re.search(self.key_word, text).span()[1]
-        index_end_of_line = re.search("\n", text[index_end_of_string:]).span()[0] + index_end_of_string
-        data = text[index_end_of_string: index_end_of_line]
-        return data.strip()
+        if re.search(self.key_word, text) is None:
+            return None
+        else:
+            index_end_of_string = re.search(self.key_word, text).span()[1]
+            index_end_of_line = re.search("\n", text[index_end_of_string:]).span()[0] + index_end_of_string
+            data = text[index_end_of_string: index_end_of_line]
+            data = data.replace("\xa0", " ")
+            return data.strip()
 
 
 class AboutHouseBlockHandler(AbstractHandler):
@@ -27,10 +31,13 @@ class AboutHouseBlockHandler(AbstractHandler):
 
     def get_info(self, soup: bs4.BeautifulSoup) -> str or None:
         text = soup.text
-        index_end_of_string = re.search(self.key_word, text).span()[1]
-        index_end_of_line = re.search("\n", text[index_end_of_string:]).span()[0] + index_end_of_string
-        data = text[index_end_of_string: index_end_of_line]
-        return data
+        if re.search(self.key_word, text) is None:
+            return None
+        else:
+            index_end_of_string = re.search(self.key_word, text).span()[1]
+            index_end_of_line = re.search("\n", text[index_end_of_string:]).span()[0] + index_end_of_string
+            data = text[index_end_of_string: index_end_of_line]
+            return data.strip()
 
 
 class EmptyHandler(AbstractHandler):
@@ -52,7 +59,7 @@ class NFloorsHandler(AboutApartmentBlockHandler):
     def get_info(self, soup: bs4.BeautifulSoup) -> str or None:
         text = super().get_info(soup)
         index_end_string = re.search("из", text).span()[1]
-        return text[index_end_string:]
+        return text[index_end_string:].strip()
 
 
 class ApartmentFloorHandler(AboutApartmentBlockHandler):
@@ -62,7 +69,7 @@ class ApartmentFloorHandler(AboutApartmentBlockHandler):
     def get_info(self, soup: bs4.BeautifulSoup) -> str or None:
         text = super().get_info(soup)
         index_begin_string = re.search("из", text).span()[0]
-        return text[: index_begin_string]
+        return text[: index_begin_string].strip()
 
 
 class PriceHandler(AbstractHandler):
@@ -71,7 +78,7 @@ class PriceHandler(AbstractHandler):
         index_begin_price = re.search("Пожаловаться", text).span()[1]
         index_end_price = re.search("₽", text[index_begin_price:]).span()[0] + index_begin_price
         price = text[index_begin_price: index_end_price]
-        return price
+        return re.sub("\D", "", price)
 
 
 class Distributor:

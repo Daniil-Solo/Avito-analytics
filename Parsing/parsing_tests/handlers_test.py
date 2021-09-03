@@ -1,47 +1,50 @@
 import unittest
 import bs4
+import json
 from Parsing.Handler import *
 
 
-class TestPhysAddressHandler(unittest.TestCase):
+def get_answers(key_word: str, right_answer: str, soup: bs4.BeautifulSoup):
+    """
+    This function returns values for assertEqual ('*' is required)
+    It creates handler for key_word and get answer using soup
+    """
+    some_handle = Distributor(key_word).distribute()
+    handle_answer = some_handle.get_info(soup)
+    return right_answer, handle_answer
 
-    def test_get_right_address_1(self):
+
+class TestHandler(unittest.TestCase):
+
+    def test_get_right_answers_1(self):
         with open("parsing_test_1.html", 'r', encoding='utf-8') as f:
             html = f.read()
         soup = bs4.BeautifulSoup(html, "lxml")
-        handler = Distributor("physical address").distribute()
-        right_answer = "Пермский край, Пермь, ул. Революции, 54| р-н Свердловский"
-        self.assertEqual(handler.get_info(soup), right_answer)
 
-    def test_get_right_address_2(self):
+        with open("right_answers_test_1.json", 'r', encoding='utf-8') as f:
+            answers = json.load(f)
+
+        for key in answers:
+            self.assertEqual(*get_answers(key, answers[key], soup))
+
+    def test_get_right_answers_2(self):
         with open("parsing_test_2.html", 'r', encoding='utf-8') as f:
             html = f.read()
         soup = bs4.BeautifulSoup(html, "lxml")
-        handler = Distributor("physical address").distribute()
-        right_answer = "ул. Гашкова, д. 51, корп. 2| р-н Мотовилихинский"
-        self.assertEqual(handler.get_info(soup), right_answer)
 
-    def test_get_right_address_3(self):
+        with open("right_answers_test_2.json", 'r', encoding='utf-8') as f:
+            answers = json.load(f)
+
+        for key in answers:
+            self.assertEqual(*get_answers(key, answers[key], soup))
+
+    def test_get_right_answers_3(self):
         with open("parsing_test_3.html", 'r', encoding='utf-8') as f:
             html = f.read()
         soup = bs4.BeautifulSoup(html, "lxml")
-        handler = Distributor("physical address").distribute()
-        right_answer = "Пермский край, Пермь, ул. Сакко и Ванцетти, 93А| р-н Мотовилихинский"
-        self.assertEqual(handler.get_info(soup), right_answer)
 
+        with open("right_answers_test_3.json", 'r', encoding='utf-8') as f:
+            answers = json.load(f)
 
-class TestAboutApartmentBlockHandler(unittest.TestCase):
-    def test_get_right_address_1(self):
-        with open("parsing_test_1.html", 'r', encoding='utf-8') as f:
-            html = f.read()
-        soup = bs4.BeautifulSoup(html, "lxml")
-
-        handler_area = Distributor("area of apartment").distribute()
-        right_answer = "35 м²".split()[0]
-        handler_answer = handler_area.get_info(soup).split()[0]
-        self.assertEqual(handler_answer, right_answer)
-
-        handler_n_rooms = Distributor("number of rooms").distribute()
-        right_answer = "1"
-        handler_answer = handler_n_rooms.get_info(soup)
-        self.assertEqual(handler_answer, right_answer)
+        for key in answers:
+            self.assertEqual(*get_answers(key, answers[key], soup))
