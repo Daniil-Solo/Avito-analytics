@@ -6,6 +6,7 @@ if __name__ == "__main__":
     while True:
         print()
         print("Вам доступны следующие действия:")
+        print("0. Выход")
         print("1. Начать парсинг данных")
 
         answer = input("Ваш ответ: ")
@@ -15,7 +16,9 @@ if __name__ == "__main__":
             print("Ошибка! Вам следует указать номер действия!")
             continue
 
-        if choice == 1:
+        if choice == 0:
+            exit(1)
+        elif choice == 1:
             parser = AvitoParser()
             parser.start()
         else:
