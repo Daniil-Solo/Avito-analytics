@@ -8,6 +8,8 @@ from Parsing.Page import Page
 
 
 class AvitoParser:
+    LOOP_DELAY = 5
+
     def __init__(self):
         self.url = None
         self.file_name = None
@@ -15,7 +17,7 @@ class AvitoParser:
         self.has_headers = False
         self.load_new_configs()
 
-    def get_n_pages(self) -> int or None:
+    def get_n_pages(self) -> int:
         """
         This function finds out number of pages for this theme.
         It returns None, if some error.
@@ -30,12 +32,13 @@ class AvitoParser:
             return int(max_number_page)
         except requests.exceptions.ConnectionError:
             print("Отсутствует соединение")
-            return None
+            return 0
 
     def save_data(self, data: list) -> None:
         """
         This function saves data in a file named self.file_name
         """
+        print("Сохранение")
         if not self.has_headers:
             headers = [key for key in self.params if self.params[key]]
             with open(self.file_name, 'w', newline='', encoding='utf-8') as csv_file:
@@ -53,7 +56,7 @@ class AvitoParser:
         If there is no configs.json, file will be created with default values
         """
         try:
-            with open("configs.json", 'r') as read_f:
+            with open("Parsing/configs.json", 'r') as read_f:
                 configs = json.load(read_f)
             self.url = configs['url']
             self.file_name = configs['file_name']
@@ -71,5 +74,7 @@ class AvitoParser:
         for number_page in n_pages:
             page = Page(self.url, number_page)
             data = page.get_data(self.params)
+            if not data:
+                return
             self.save_data(data)
-            time.sleep(10)
+            time.sleep(AvitoParser.LOOP_DELAY)

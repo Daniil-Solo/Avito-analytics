@@ -19,6 +19,7 @@ class Post:
         """
         full_url = Post.domain + self.short_url
         request = requests.get(full_url)
+        print(full_url)
         if request.reason != 'OK':
             print("Возникла ошибка", request.reason)
         html = request.text
