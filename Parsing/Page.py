@@ -34,11 +34,16 @@ class Page:
         """
         This function returns list of data about apartments
         If there is connection error, it returns []
+        If there is connection error after get_urls, it returns data
         """
         urls = self.get_urls()
         data = []
         for url in urls:
-            post = Post(url)
-            data.append(post.get_data(params))
-            time.sleep(8)
+            try:
+                post = Post(url)
+                data.append(post.get_data(params))
+                print(data)
+                time.sleep(8)
+            except requests.exceptions.ConnectionError:
+                return data
         return data

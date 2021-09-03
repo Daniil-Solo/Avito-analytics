@@ -19,17 +19,18 @@ class Post:
         """
         full_url = Post.domain + self.short_url
         request = requests.get(full_url)
+        if request.reason != 'OK':
+            print("Возникла ошибка", request.reason)
         html = request.text
         soup = BeautifulSoup(html, "lxml")
-        key_storage = dict(link=full_url)
-        params_without_link = params.copy()
-        params_without_link.pop("link")
-        for key in params_without_link:
-            if params[key]:
-                key_storage[key] = ""
+        key_storage = dict()
+        for key in [key for key in params if params[key]]:
+            if key == "link":
+                key_storage[key] = full_url
+            else:
                 handler = Distributor(key).distribute()
                 try:
-                    key_storage[key] = handler.get_info(soup).strip()
+                    key_storage[key] = handler.get_info(soup)
                 except AttributeError or TypeError:
                     key_storage[key] = None
         return list(key_storage.values())
