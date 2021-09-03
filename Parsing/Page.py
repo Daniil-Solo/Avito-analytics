@@ -44,7 +44,6 @@ class Page:
             try:
                 post = Post(url)
                 data.append(post.get_data(params))
-                print(data[-1])
                 time.sleep(Page.LOOP_DELAY)
             except requests.exceptions.ConnectionError:
                 return data

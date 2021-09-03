@@ -52,24 +52,19 @@ class PhysAddressHandler(AbstractHandler):
         return address
 
 
-class NFloorsHandler(AboutApartmentBlockHandler):
-    def __init__(self):
-        super().__init__("Этаж:")
-
+class NFloorsHandler(AbstractHandler):
     def get_info(self, soup: bs4.BeautifulSoup) -> str or None:
-        text = super().get_info(soup)
-        index_end_string = re.search("из", text).span()[1]
-        return text[index_end_string:].strip()
+        text = soup.text
+        index_begin_number = re.search("/", text).span()[1]
+        index_end_number = re.search(" ", text[index_begin_number:]).span()[0] + index_begin_number
+        return text[index_begin_number: index_end_number]
 
 
-class ApartmentFloorHandler(AboutApartmentBlockHandler):
-    def __init__(self):
-        super().__init__("Этаж:")
-
+class ApartmentFloorHandler(AbstractHandler):
     def get_info(self, soup: bs4.BeautifulSoup) -> str or None:
-        text = super().get_info(soup)
-        index_begin_string = re.search("из", text).span()[0]
-        return text[: index_begin_string].strip()
+        text = soup.text
+        index_begin_number, index_end_number = re.search(r"[\d]+/", text).span()
+        return text[index_begin_number: index_end_number-1]
 
 
 class PriceHandler(AbstractHandler):
@@ -78,7 +73,7 @@ class PriceHandler(AbstractHandler):
         index_begin_price = re.search("Пожаловаться", text).span()[1]
         index_end_price = re.search("₽", text[index_begin_price:]).span()[0] + index_begin_price
         price = text[index_begin_price: index_end_price]
-        return re.sub("\D", "", price)
+        return re.sub(r"\D", "", price)
 
 
 class Distributor:

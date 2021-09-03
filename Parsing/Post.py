@@ -1,6 +1,5 @@
 from bs4 import BeautifulSoup
 import requests
-import re
 
 from Parsing.Handler import Distributor
 
@@ -35,4 +34,3 @@ class Post:
                 except AttributeError or TypeError:
                     key_storage[key] = None
         return list(key_storage.values())
-
