@@ -2,22 +2,28 @@ import pandas as pd
 
 
 class Preprocessor:
+    """
+    This class prepares data with full features
+    Don't use it if data don't contain some features
+    """
     NonNanValuesCount = 14
 
     def __init__(self, data: pd.DataFrame):
         self.data = data
-        self.n = len(data)
-        self.data['delete'] = [True] * self.n
+        self.data['delete'] = [True] * len(self.data)
 
     def delete_rows_with_nan(self):
+        """
+        This function removes records without physical address
+        and records with non-nan data less than NonNanValuesCount
+        """
         self.data.dropna(subset=['physical address'], inplace=True)
         self.data.dropna(thresh=Preprocessor.NonNanValuesCount, inplace=True)
-        self.update_n()
-
-    def update_n(self):
-        self.n = len(self.data)
 
     def divide_address(self):
+        """
+        This function divides address into street and district
+        """
         addresses = []
         districts = []
         for item in self.data['physical address']:
@@ -38,26 +44,44 @@ class Preprocessor:
         self.data.drop(columns=['delete'], inplace=True)
 
     def divide_area(self):
+        """
+        This function removes м² for area
+        """
         self.data['area of apartment'] = self.data['area of apartment'].map(lambda x: x.replace(" м²", ""))
 
     def divide_garbage_chute(self):
+        """
+        This function divides garbage_chute into garbage chute and concierge
+        """
         self.data["concierge"] = self.data['garbage chute'].map(str).map(lambda x: 'консьерж' in x)
         self.data["garbage chute"] = self.data['garbage chute'].map(str).map(lambda x: 'мусоропровод' in x)
 
     def correct_types(self):
+        """
+        This function corrects type following attributes:
+        number of rooms, area of apartment, elevator
+        """
         self.data["number of rooms"] = self.data["number of rooms"].map(lambda x: x if x.isdigit() else 1)
         self.data["number of rooms"] = self.data["number of rooms"].astype("int64")
         self.data["area of apartment"] = self.data["area of apartment"].astype("float64")
         self.data["elevator"] = self.data["elevator"].astype("bool")
 
     def filling_nan_values(self):
+        """
+        This function replaces nan-values from categorical-features into tops
+        and replaces year of construction into top on region
+        """
         table = self.data.describe(include="object")
         for column_name in table:
             self.data[column_name].fillna(value=table[column_name].top, inplace=True)
 
+        # DO replacing
         self.data['year of construction'].fillna(value=self.data['year of construction'].median(), inplace=True)
 
     def sort_column_names(self):
+        """
+        This function sorts column names
+        """
         self.data = self.data[['address', 'district', 'number of floors', 'apartment floor',
                                'number of rooms', 'area of apartment', 'bathroom', 'repair',
                                'view from the windows', 'terrace', 'year of construction',
@@ -74,10 +98,13 @@ class Preprocessor:
         self.correct_types()
 
     def change_structure(self):
-        self.data = self.data.reindex(range(self.n), method='ffill')
+        self.data = self.data.reindex(range(len(self.data)), method='ffill')
         self.sort_column_names()
 
     def get_data(self):
+        """
+        This function returns changed data
+        """
         self.delete()
         self.form_new_attributes()
         self.filling_nan_values()
