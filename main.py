@@ -1,4 +1,5 @@
 from Parsing.AvitoParser import AvitoParser
+from ETL.preprocessing import Preprocessor, DataLoader, DataSaver
 
 
 if __name__ == "__main__":
@@ -8,6 +9,7 @@ if __name__ == "__main__":
         print("Вам доступны следующие действия:")
         print("0. Выход")
         print("1. Начать парсинг данных")
+        print("2. Предобработать данные")
 
         answer = input("Ваш ответ: ")
         try:
@@ -21,6 +23,10 @@ if __name__ == "__main__":
         elif choice == 1:
             parser = AvitoParser()
             parser.start()
+        elif choice == 2:
+            data = DataLoader('data.csv').load()
+            data = Preprocessor(data).get_data()
+            DataSaver('new_data.csv', data).save()
         else:
             print("Ошибка! Не обнаружено действие по данному номеру!")
             continue
