@@ -18,7 +18,6 @@ class Preprocessor:
         and records with non-nan data less than NonNanValuesCount
         """
         self.data.dropna(subset=['physical address'], inplace=True)
-        #self.data.dropna(subset=['year of construction'], inplace=True)
         self.data.dropna(thresh=Preprocessor.NonNanValuesCount, inplace=True)
 
     def divide_address(self):
@@ -82,7 +81,7 @@ class Preprocessor:
         """
         self.data = self.data[['address', 'district', 'number of floors', 'apartment floor',
                                'number of rooms', 'area of apartment', 'bathroom', 'repair',
-                               'view from the windows', 'terrace', 'year of construction',
+                               'view from the windows', 'terrace',
                                'garbage chute', 'type of house', 'parking', 'concierge',
                                'elevator', 'link', 'price']]
 
