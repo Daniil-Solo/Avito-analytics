@@ -18,6 +18,7 @@ class Preprocessor:
         and records with non-nan data less than NonNanValuesCount
         """
         self.data.dropna(subset=['physical address'], inplace=True)
+        #self.data.dropna(subset=['year of construction'], inplace=True)
         self.data.dropna(thresh=Preprocessor.NonNanValuesCount, inplace=True)
 
     def divide_address(self):
@@ -75,9 +76,6 @@ class Preprocessor:
         for column_name in table:
             self.data[column_name].fillna(value=table[column_name].top, inplace=True)
 
-        # DO replacing
-        self.data['year of construction'].fillna(value=self.data['year of construction'].median(), inplace=True)
-
     def sort_column_names(self):
         """
         This function sorts column names
@@ -110,3 +108,20 @@ class Preprocessor:
         self.filling_nan_values()
         self.change_structure()
         return self.data
+
+
+class DataLoader:
+    def __init__(self, path):
+        self.path = path
+
+    def load(self):
+        return pd.read_csv(self.path, sep=';')
+
+
+class DataSaver:
+    def __init__(self, new_path, new_data):
+        self.path = new_path
+        self.data = new_data
+
+    def save(self):
+        self.data.to_csv(self.path, sep=';')
