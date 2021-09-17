@@ -24,9 +24,12 @@ if __name__ == "__main__":
             parser = AvitoParser()
             parser.start()
         elif choice == 2:
-            data = DataLoader('data.csv').load()
+            input_filename = 'data.csv'
+            output_filename = 'processed_data.csv'
+            data = DataLoader(input_filename).load()
             data = Preprocessor(data).get_data()
-            DataSaver('new_data.csv', data).save()
+            DataSaver(output_filename, data).save()
+            print(f"Успех! Данные из {input_filename} были обработаны и помещены в {output_filename}")
         else:
             print("Ошибка! Не обнаружено действие по данному номеру!")
             continue
