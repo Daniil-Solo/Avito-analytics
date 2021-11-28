@@ -105,7 +105,7 @@ class Distributor:
             return AboutHouseBlockHandler("Год постройки:")
         elif self.key == "elevator":
             return AboutHouseBlockHandler("Пассажирский лифт:")
-        elif self.key == "garbage chute":
+        elif self.key == "extra":
             return AboutHouseBlockHandler("В доме:")
         elif self.key == "type of house":
             return AboutApartmentBlockHandler("Тип дома:")

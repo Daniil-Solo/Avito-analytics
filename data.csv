@@ -1,4 +1,4 @@
-physical address;number of rooms;area of apartment;number of floors;apartment floor;price;link;repair;bathroom;view from the windows;terrace;year of construction;elevator;garbage chute;type of house;parking
+physical address;number of rooms;area of apartment;number of floors;apartment floor;price;link;repair;bathroom;view from the windows;terrace;year of construction;elevator;extra;type of house;parking
 Пермский край, Пермь, ул. Архитектора Свиязева, 50/2| р-н Индустриальный;3;61.2 м²;5;1;3200000;https://www.avito.ru/perm/kvartiry/3-k._kvartira_612m_15et._2233116144;косметический;раздельный;на улицу, во двор;балкон;1972;0;газоснабжение;панельный;открытая во дворе
 ул. Емельяна Ярославского, д. 60| р-н Свердловский;1;34.6 м²;25;3;2726000;https://www.avito.ru/perm/kvartiry/1-k._kvartira_346_m_325_et._2197143903;;;;балкон;;;;кирпичный;
 ул. Гашкова, д. 51, корп. 2| р-н Мотовилихинский;3;68.6 м²;17;4;4165234;https://www.avito.ru/perm/kvartiry/3-k._kvartira_686m_417et._2035602665;;раздельный;на улицу, во двор;лоджия;;1;;панельный;открытая во дворе
