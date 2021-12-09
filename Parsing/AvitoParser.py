@@ -17,7 +17,7 @@ class AvitoParser:
         self.has_headers = False
         self.load_new_configs()
 
-    def get_n_pages(self) -> int:
+    def get_n_pages(self) -> int or None:
         """
         This function finds out number of pages for this theme.
         It returns None, if some error.
@@ -32,7 +32,7 @@ class AvitoParser:
             return int(max_number_page)
         except requests.exceptions.ConnectionError:
             print("Отсутствует соединение")
-            return 0
+            return None
 
     def save_data(self, data: list) -> None:
         """
