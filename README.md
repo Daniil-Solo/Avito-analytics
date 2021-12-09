@@ -1,4 +1,4 @@
-# Аналитика квартир в Перми по данным из Avito
+# Прогнозирование цен квартир в городе Перми по данным с сайта Avito
 ## Задачи на проект
 * [Спарсить данные о квартирах в городе Пермь](https://github.com/Daniil-Solo/Avito-analytics/tree/main/Parsing)
 * [Провести обработку полученных данных](https://github.com/Daniil-Solo/Avito-analytics/tree/main/ETL)
