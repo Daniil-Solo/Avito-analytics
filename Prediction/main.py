@@ -1,11 +1,35 @@
 import tkinter as tk
 from tkinter import ttk
+from functions import get_price
 
 
 def create_window():
-
     def calculate():
-        pass
+        try:
+            data = [float(ent_n_rooms.get()), float(ent_area.get()), float(ent_n_floors.get()), float(ent_floor.get()),
+                    float(ent_year.get()), float(ent_lift.get()), float(cmb_conc.current()), float(cmb_garbage.current())]
+            repair_list = [0] * 4
+            repair_list[cmb_repair.current()] = 1
+            data += repair_list
+            bath_list = [0] * 3
+            bath_list[cmb_bath.current()] = 1
+            data += bath_list
+            terrace_list = [0] * 3
+            terrace_list[cmb_terrace.current()] = 1
+            data += terrace_list
+            house_type_list = [0] * 5
+            house_type_list[cmb_house_type.current()] = 1
+            data += house_type_list
+            district_list = [0] * 7
+            district_list[cmb_district.current()] = 1
+            data += district_list
+            data.append(float(ent_lat.get()))
+            data.append(float(ent_lon.get()))
+            result = get_price(data)
+
+            lbl_result['text'] = "Стоимость: " + str(round(result/1000_000, 3)) + " млн."
+        except ValueError:
+            pass
 
     root = tk.Tk()
     root.title("Предсказание стоимости квартиры")
@@ -44,13 +68,13 @@ def create_window():
     ent_lift.grid(row=6, column=1, sticky="e")
 
     lbl_conc = tk.Label(frame, text="Консьерж")
-    cmb_conc = ttk.Combobox(frame, values=["Есть", "Нет"], width=16)
+    cmb_conc = ttk.Combobox(frame, values=["Нет", "Есть"], width=16)
     cmb_conc.set("Выберите ответ")
     lbl_conc.grid(row=7, column=0)
     cmb_conc.grid(row=7, column=1, sticky="e", padx=5, pady=5)
 
     lbl_garbage = tk.Label(frame, text="Мусоропровод")
-    cmb_garbage = ttk.Combobox(frame, values=["Есть", "Нет"], width=16)
+    cmb_garbage = ttk.Combobox(frame, values=["Нет", "Есть"], width=16)
     cmb_garbage.set("Выберите ответ")
     lbl_garbage.grid(row=8, column=0)
     cmb_garbage.grid(row=8, column=1, sticky="e", padx=5, pady=5)
@@ -61,7 +85,7 @@ def create_window():
     lbl_repair.grid(row=9, column=0)
     cmb_repair.grid(row=9, column=1, sticky="e", padx=5, pady=5)
 
-    lbl_bath = tk.Label(frame, text="Ремонт")
+    lbl_bath = tk.Label(frame, text="Санузел")
     cmb_bath = ttk.Combobox(frame, values=["Несколько", "Раздельный", "Совмещенный"], width=16)
     cmb_bath.set("Выберите ответ")
     lbl_bath.grid(row=10, column=0)
@@ -102,7 +126,6 @@ def create_window():
     button.grid(row=16, column=0, padx=5, pady=5)
     lbl_result = tk.Label(frame, text="Стоимость: ")
     lbl_result.grid(row=16, column=1)
-
 
     root.mainloop()
 
