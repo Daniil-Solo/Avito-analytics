@@ -122,7 +122,7 @@ def create_window():
     lbl_lon.grid(row=15, column=0)
     ent_lon.grid(row=15, column=1, sticky="e")
 
-    button = tk.Button(frame, text="Раcсчитать стоимость", command=calculate)
+    button = tk.Button(frame, text="Рассчитать стоимость", command=calculate)
     button.grid(row=16, column=0, padx=5, pady=5)
     lbl_result = tk.Label(frame, text="Стоимость: ")
     lbl_result.grid(row=16, column=1)
